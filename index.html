@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/0.5.14/hls.min.js" integrity="sha512-js37JxjD6gtmJ3N2Qzl9vQm4wcmTilFffk0nTSKzgr3p6aitg73LR205203wTzCCC/NZYO2TAxSa0Lr2VMLQvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+</head>
+
+<body>
+  <input type="text" id="text" value=""/>
+  <br/>
+  <button onclick="submit()" id="button">Search</button>
+  <video id='video' controls autoplay playsinline class="videoCentered">
+  </video>
+  <img id="image"/>
+  <script>
+ 
+    // axios.defaults.xsrfCookieName = 'csrftoken';
+    // axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+    url = "https://api.allorigins.win/get?url=https://api.chzzk.naver.com/service/v2/channels/dcd75ef0f2c664e3270de18696ad43bf/live-detail"
+    chzzkapi="https://api.chzzk.naver.com/service/"
+    function submit(){
+      var key=document.getElementById('text').value;
+      search=encodeURIComponent(chzzkapi+"v1/search/channels?keyword="+key);
+      url = "https://api.allorigins.win/raw?url=" + search;
+      axios.get(url)
+      .then(function (response) {
+        
+        result=response.data.content.data
+        const maxFollowerElement = result.reduce((maxElement, element) => {
+  return element.channel.followerCount > maxElement.channel.followerCount ? element : maxElement;
+}, result[0]); // Provide a safe initial value
+        ID=maxFollowerElement.channel.channelId;
+        live = encodeURIComponent(chzzkapi+"v2/channels/"+ID+"/live-detail");
+        lurl= "https://api.codetabs.com/v1/proxy?quest="+live;
+        axios.get(lurl).then(function(res){
+          detail=JSON.parse(res.data.content.livePlaybackJson);
+          if(detail.media.length){
+            path=detail.media[0]['path'];
+            console.log(path);
+            video=document.getElementById('video')
+            // video.src=hls
+            const hls = new Hls();
+            hls.loadSource(path);
+            hls.attachMedia(video);
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+    logStatus('Media element attached');
+    bufferingIdx = -1;
+    events.video.push({
+      time: self.performance.now() - events.t0,
+      type: 'Media attached',
+    });
+    trimEventHistory();
+  });
+        video.play()
+          }
+          else
+          {
+            console.log('Not online');
+          }
+          console.log(detail)
+        }).catch(function (e){
+          console.log(e)
+        })
+        console.log(response.data.content.data);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
+    }
+    search=encodeURIComponent(chzzkapi+"v2/channels/dcd75ef0f2c664e3270de18696ad43bf/live-detail");
+
+    
+    // url = "https://api.codetabs.com/v1/proxy?quest=" + chzzk;
+    // url = "https://test.cors.workers.dev/?" + chzzk
+    
+    
+    // fetch('https://api.allorigins.win/raw?url=https://api.chzzk.naver.com/service/v2/channels/dcd75ef0f2c664e3270de18696ad43bf/live-detail').then(function (res) {
+    //   console.log(res)
+    // }).catch(function (err) {
+    //   console.log(err);
+    // })
+  </script>
+  <script src="script.js"></script>
+</body>
+
+</html>
