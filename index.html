@@ -15,11 +15,14 @@
   <input type="text" id="text" value=""/>
   <br/>
   <button onclick="submit()" id="button">Search</button>
-  <video id='video' controls autoplay playsinline class="videoCentered">
+  <video id='video' controls autoplay playsinline style="width: 70%" class="videoCentered">
   </video>
   <img id="image"/>
   <script>
- 
+//     const exampleSocket = new WebSocket("wss://kr-ss3.chat.naver.com")
+//     exampleSocket.onmessage = (event) => {
+//   console.log(event.data);
+// };
     // axios.defaults.xsrfCookieName = 'csrftoken';
     // axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     url = "https://api.allorigins.win/get?url=https://api.chzzk.naver.com/service/v2/channels/dcd75ef0f2c664e3270de18696ad43bf/live-detail"
@@ -61,7 +64,9 @@
           }
           else
           {
-            console.log('Not online');
+            msg='Not online'
+            console.log(msg);
+            alert(msg);
           }
           console.log(detail)
         }).catch(function (e){
