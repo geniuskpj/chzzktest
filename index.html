@@ -14,12 +14,66 @@
 <body>
   <input type="text" id="text" value=""/>
   <br/>
-  <button onclick="submit()" id="button">Search</button>
+  <button onclick="submit()" onkeydown="submit()" id="button">Search</button>
+  <button id="connectBtn">Connect</button>
+  <div id="messageOutput"></div>
   <video id='video' controls autoplay playsinline style="width: 70%" class="videoCentered">
   </video>
   <img id="image"/>
   <script>
-//     const exampleSocket = new WebSocket("wss://kr-ss3.chat.naver.com")
+
+    document.getElementById("text").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        // Call your function here
+        submit();
+      }
+    });
+    const connectBtn = document.getElementById('connectBtn');
+const messageOutput = document.getElementById('messageOutput');
+
+function connectToWebSocket(addr) {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(addr); // Replace with your server URL
+
+    ws.onopen = () => {
+      console.log('WebSocket connection opened');
+      resolve(ws); // Resolve the promise with the WebSocket object when connected
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket connection error:', error);
+      reject(error); // Reject the promise if connection fails
+    };
+
+    ws.onmessage = (event) => {
+      const message = event.data;
+      console.log(message);
+      messageOutput.textContent += `${message}\n`; // Append received messages to the output
+    };
+  });
+}
+
+connectBtn.addEventListener('click', async () => {
+
+  try {
+    const ws = await connectToWebSocket(); // Await the promise to ensure connection before sending messages
+    // console.log('Connected! Sending a message...');
+    // ws.send('Hello from the client!');
+  } catch (error) {
+    console.error('Connection failed:', error);
+    messageOutput.textContent = 'Connection error!';
+  }
+});
+async function someFunction(addr){
+  try {
+    const ws = await connectToWebSocket(addr); // Await the promise to ensure connection before sending messages
+    // console.log('Connected! Sending a message...');
+    // ws.send('Hello from the client!');
+  } catch (error) {
+    console.error('Connection failed:', error);
+    messageOutput.textContent = 'Connection error!';
+  }
+}
 //     exampleSocket.onmessage = (event) => {
 //   console.log(event.data);
 // };
@@ -27,10 +81,12 @@
     // axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     url = "https://api.allorigins.win/get?url=https://api.chzzk.naver.com/service/v2/channels/dcd75ef0f2c664e3270de18696ad43bf/live-detail"
     chzzkapi="https://api.chzzk.naver.com/service/"
+    nngurl="https://comm-api.game.naver.com/nng_main/v1/"
     function submit(){
       var key=document.getElementById('text').value;
+      const prox="https://api.allorigins.win/raw?url="
       search=encodeURIComponent(chzzkapi+"v1/search/channels?keyword="+key);
-      url = "https://api.allorigins.win/raw?url=" + search;
+      url = prox + search;
       axios.get(url)
       .then(function (response) {
         
@@ -40,7 +96,9 @@
 }, result[0]); // Provide a safe initial value
         ID=maxFollowerElement.channel.channelId;
         live = encodeURIComponent(chzzkapi+"v2/channels/"+ID+"/live-detail");
-        lurl= "https://api.codetabs.com/v1/proxy?quest="+live;
+        
+        // lurl= "https://api.codetabs.com/v1/proxy?quest="+live;
+        lurl= prox+live;
         axios.get(lurl).then(function(res){
           detail=JSON.parse(res.data.content.livePlaybackJson);
           if(detail.media.length){
@@ -73,11 +131,41 @@
           console.log(e)
         })
         console.log(response.data.content.data);
+        stat=encodeURIComponent('https://api.chzzk.naver.com/polling/v2/channels/'+ID+"/live-status");
+        statp= prox+stat 
+        axios.get(statp).then(
+           ( res)=>{
+            // console.log(res);
+            chatID=res.data.content.chatChannelId
+            axios.get(prox+encodeURIComponent(nngurl+`chats/access-token?channelId=${chatID}&chatType=STREAMING`)).then(
+              (r)=>{
+                Token=r.data.content.accessToken;
+                fetch(prox+encodeURIComponent(nngurl+`user/getUserStatus`),{
+                  credentials:"include"
+                  // headers:{
+                  //   cookie:"NNB=FLKLYBG3SJQGK; ba.uuid=41e90e81-1b03-48bc-9834-434321201425; nid_inf=1062632081; NID_AUT=+zuaQDS3UbX7M8JwS+tdBsPxFH+oODR+jqNE78dsFNbXoG3yLaEqvhzYFBQsv0D9; NID_JKL=uy4qLEt/R+decFXfROYLqyFOGeP2ty4D1a1C+qfl1Jw=; NID_SES=AAABnuU6SxRRDIswdmtPBUXnCbLdqyY1KMvTXIsUL4ebrHG9tgmkdoNDMekjcBr+SMrf9YgfjBZTi69CsC9njkqST2vCGOp8TuN6hUrWuMrx5L2pF4/ANz24p/80LZynxyV5DO6n6EW6t7Uq7cl5w7gqOAJtFZEJ2XJmuB7Fu6H5yvNzeA0GOlvgUcmUngESZI2DWpcIRS+fbk/X1mOHkkhNbHGXNfwwrnWnGl59thIjj6ULslgFflZ06zoPxXQ/q301fRILEvzJEtYkXUoDdawa+OoW0YTKYGoMe3Mqrsnalp7xZe9Bz4PshGlsUUyvWYGIPtIpqJdGlE7tdjcYwHupiWoTszaoNBI2zJ4vmeQaG6AgdTe9bwNDX4vXJ7NPX2E6V7oB9N+Yi7T4burplLHcIQy9IKYl4k3thrbLEtFd9hVBZBtrRzxsoh1xgG7kr4Tba2Pm0XS8OvrecHeN3JuwbxiDUa1Qd1CutRbVBaIsRtfJcFmg5/1nd5WPpBiux+Sn4WrgnsWeLYqTekcszDDv6WZN9Nzrefng2NS2ykjz96Mv"
+                  // }
+                }).then(
+                  (r)=>{
+                    console.log(r);
+                  }
+                )
+              }
+            )
+            const serverId = Math.abs(chatID.split("").map(c => c.charCodeAt(0)).reduce((a, b) => a + b)) % 9 + 1;
+            wssurl=`wss://kr-ss${serverId}.chat.naver.com/chat`
+            console.log(wssurl)
+            // const result=someFunction(wssurl).Result;
+          }
+          ).catch((e)=>{
+            console.log(e);
+          })
       })
       .catch(function (error) {
         // handle error
         console.log(error);
       })
+      
     }
     search=encodeURIComponent(chzzkapi+"v2/channels/dcd75ef0f2c664e3270de18696ad43bf/live-detail");
 
