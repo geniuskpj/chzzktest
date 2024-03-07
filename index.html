@@ -9,11 +9,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/0.5.14/hls.min.js" integrity="sha512-js37JxjD6gtmJ3N2Qzl9vQm4wcmTilFffk0nTSKzgr3p6aitg73LR205203wTzCCC/NZYO2TAxSa0Lr2VMLQvQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+  <script type="text/javascript" src="https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js" charset="utf-8"></script>
 </head>
 
 <body>
   <input type="text" id="text" value=""/>
   <br/>
+  <div id="naver_id_login"></div>
   <button onclick="submit()" onkeydown="submit()" id="button">Search</button>
   <button id="connectBtn">Connect</button>
   <div id="messageOutput"></div>
@@ -21,7 +23,13 @@
   </video>
   <img id="image"/>
   <script>
-
+    var naver_id_login = new naver_id_login("6zzKyWtOU3TBWWTGW_IO", "./callback.html");
+    var state = naver_id_login.getUniqState();
+        naver_id_login.setButton("white", 2,40);
+        naver_id_login.setDomain("https://geniuskpj.github.io/chzzktest/");
+        naver_id_login.setState(state);
+        naver_id_login.setPopup();
+        naver_id_login.init_naver_id_login();
     document.getElementById("text").addEventListener("keydown", function(event) {
       if (event.key === "Enter") {
         // Call your function here
