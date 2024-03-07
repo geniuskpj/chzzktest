@@ -148,11 +148,8 @@ async function someFunction(addr){
             axios.get(prox+encodeURIComponent(nngurl+`chats/access-token?channelId=${chatID}&chatType=STREAMING`)).then(
               (r)=>{
                 Token=r.data.content.accessToken;
-                fetch(prox+encodeURIComponent(nngurl+`user/getUserStatus`),{
-                  credentials:"include"
-                  // headers:{
-                  //   cookie:"NNB=FLKLYBG3SJQGK; ba.uuid=41e90e81-1b03-48bc-9834-434321201425; nid_inf=1062632081; NID_AUT=+zuaQDS3UbX7M8JwS+tdBsPxFH+oODR+jqNE78dsFNbXoG3yLaEqvhzYFBQsv0D9; NID_JKL=uy4qLEt/R+decFXfROYLqyFOGeP2ty4D1a1C+qfl1Jw=; NID_SES=AAABnuU6SxRRDIswdmtPBUXnCbLdqyY1KMvTXIsUL4ebrHG9tgmkdoNDMekjcBr+SMrf9YgfjBZTi69CsC9njkqST2vCGOp8TuN6hUrWuMrx5L2pF4/ANz24p/80LZynxyV5DO6n6EW6t7Uq7cl5w7gqOAJtFZEJ2XJmuB7Fu6H5yvNzeA0GOlvgUcmUngESZI2DWpcIRS+fbk/X1mOHkkhNbHGXNfwwrnWnGl59thIjj6ULslgFflZ06zoPxXQ/q301fRILEvzJEtYkXUoDdawa+OoW0YTKYGoMe3Mqrsnalp7xZe9Bz4PshGlsUUyvWYGIPtIpqJdGlE7tdjcYwHupiWoTszaoNBI2zJ4vmeQaG6AgdTe9bwNDX4vXJ7NPX2E6V7oB9N+Yi7T4burplLHcIQy9IKYl4k3thrbLEtFd9hVBZBtrRzxsoh1xgG7kr4Tba2Pm0XS8OvrecHeN3JuwbxiDUa1Qd1CutRbVBaIsRtfJcFmg5/1nd5WPpBiux+Sn4WrgnsWeLYqTekcszDDv6WZN9Nzrefng2NS2ykjz96Mv"
-                  // }
+                axios.get(prox+encodeURIComponent(nngurl+`user/getUserStatus`),{
+                  withCredentials:true
                 }).then(
                   (r)=>{
                     console.log(r.json());
