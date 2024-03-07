@@ -32,6 +32,8 @@
         naver_id_login.init_naver_id_login();
 
     axios.defaults.withCredentials = true;
+    axios.defaults.xsrfCookieName = 'csrftoken';
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
     document.getElementById("text").addEventListener("keydown", function(event) {
       if (event.key === "Enter") {
         // Call your function here
