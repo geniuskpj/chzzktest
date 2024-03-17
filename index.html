@@ -41,6 +41,7 @@
 
 
 const prox="https://api.allorigins.win/raw?url="
+const prox2="https://api.codetabs.com/v1/proxy?quest=";
 
     
         axios.defaults.withCredentials = true;
@@ -83,7 +84,7 @@ connectBtn2.addEventListener('click', async () => {
   
   const keyurl="https://nid.naver.com/dynamicKey/"+dynamickey
   
-  const session_keys=await fetch(prox+keyurl);
+  const session_keys=await fetch(prox2+keyurl);
   
   $("id").value="geniuskpj";
   $("pw").value="wlsldjtm786&";
