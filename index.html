@@ -26,7 +26,7 @@
   <input type="hidden" id="url" value="https://www.naver.com" />
   <input type="hidden" id="locale" value="en_US" />
   <input type="hidden" id="smart_LEVEL" value=1 />
-  <input type="hidden" id="svctype" value=0 />
+  <input type="hidden" id="svctype" value=1 />
   <input type="hidden" id="bvsd"/>
   <br/>
   <div id="naver_id_login"></div>
@@ -37,6 +37,7 @@
   <video id='video' controls autoplay playsinline style="width: 70%" class="videoCentered">
   </video>
   <img id="image"/>
+
   <script>
 
 
@@ -105,7 +106,7 @@ connectBtn2.addEventListener('click', async () => {
 					$("bvsd").value = a;
           console.log(getloginp());
           axios({
-            url:prox+"https://nid.naver.com/nidlogin.login",
+            url:"https://nid.naver.com/nidlogin.login",
             method:"POST",
             data:getloginp(),
             withCredentials: true,
