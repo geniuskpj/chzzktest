@@ -89,23 +89,26 @@ function addurl(url,obj){
 function getloginp()
 {
 	var urlWithParam="";
+    urlWithParam=addurl(urlWithParam,"localechange");
+    urlWithParam=addurl(urlWithParam,"dynamicKey");
 	urlWithParam=addurl(urlWithParam,"encpw");
-    urlWithParam=addurl(urlWithParam,"encnm");
-	urlWithParam=addurl(urlWithParam,"id");
-    urlWithParam=addurl(urlWithParam,"pw");
-	urlWithParam=addurl(urlWithParam,"url");
-    urlWithParam=addurl(urlWithParam,"locale");
+    urlWithParam=addurl(urlWithParam,"enctp");
     urlWithParam=addurl(urlWithParam,"svctype");
     urlWithParam=addurl(urlWithParam,"smart_LEVEL");
     urlWithParam=addurl(urlWithParam,"bvsd");
-
+    urlWithParam=addurl(urlWithParam,"encnm");
+	urlWithParam=addurl(urlWithParam,"locale");
+    urlWithParam=addurl(urlWithParam,"url");
+    urlWithParam=addurl(urlWithParam,"id");
+    urlWithParam=addurl(urlWithParam,"pw");
+	
 	return urlWithParam;
 }
 function setCookie(cname, cvalue, exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     let expires = "expires="+ d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/; domain=.github.io;";
   }
   function setSmartLevel_custom(level) {
 	try {
@@ -117,6 +120,6 @@ function setCookie(cname, cvalue, exdays) {
 	var today = new Date();
 	var expire = new Date(today.getTime() + 60 * 60 * 24 * 365 * 1000);
 	var curCookie = "nid_slevel=" + escape(level) + "; expires="
-			+ expire.toGMTString() + "; path=/";
+			+ expire.toGMTString() + "; path=/; domain=.naver.com;";
 	document.cookie = curCookie;
 }
