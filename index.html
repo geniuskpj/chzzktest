@@ -13,29 +13,44 @@
   <script src="main.js"></script>
   <script src="common_202105.js"></script>
   <script src="bvsd.1.3.9.min.js"></script>
+  <!-- <style>
+    .Button {
+  position: absolute;
+  left: 50%; /* Horizontal position from the left edge */
+  top: 450px;  /* Vertical position from the top edge */
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 50px;
+}
+  </style> -->
 </head>
 
 <body>
+  
   <input type="text" id="text" value=""/>
-  <input type="hidden" id="id" />
-  <input type="hidden" id="pw" />
-  <input type="hidden" id="encpw" />
-  <input type="hidden" id="dynamicKey" />
-  <input type="hidden" id="encnm" />
-  <input type="hidden" id="enctp" value=1 />
-  <input type="hidden" id="url" value="https://www.naver.com" />
-  <input type="hidden" id="locale" value="en_US" />
-  <input type="hidden" id="smart_LEVEL" value=1 />
-  <input type="hidden" id="svctype" value=1 />
-  <input type="hidden" id="bvsd"/>
+  <form id="frm" target="_top" autocomplete="off" action="https://nid.naver.com/nidlogin.login" method="POST">
+  <input type="hidden" id="localechange" name="localechange" value="">
+  <input type="hidden" name="id" id="id" />
+  <input type="hidden" id="pw" name="pw" />
+  <input type="hidden" id="encpw" name="encpw" />
+  <input type="hidden" id="dynamicKey" name="dynamicKey" />
+  <input type="hidden" id="encnm" name="encnm"/>
+  <input type="hidden" id="enctp" name="enctp" value=1 />
+  <input type="hidden" id="url" name="url" value="https://m.naver.com/aside/" />
+  <input type="hidden" id="locale" name="locale" value="en_US" />
+  <input type="hidden" id="smart_LEVEL" name="smart_LEVEL" value=1 />
+  <input type="hidden" id="svctype" name="svctype" value=262144 />
+  <input type="hidden" id="bvsd" name="bvsd"/>
+</form>
   <br/>
   <div id="naver_id_login"></div>
   <button onclick="submit()" onkeydown="submit()" id="button">Search</button>
   <button id="connectBtn">Connect</button>
-  <button id="connectBtn2">Connect</button>
+  <button id="connectBtn2" class="Button">login</button>
   <div id="messageOutput"></div>
   <video id='video' controls autoplay playsinline style="width: 70%" class="videoCentered">
   </video>
+  <input type="text" id="cookie" value=""/>
   <img id="image"/>
 
   <script>
@@ -78,47 +93,28 @@ function connectToWebSocket(addr) {
   });
 }
 connectBtn2.addEventListener('click', async () => {
-  nidurl="https://nid.naver.com/nidlogin.login"
-  const resp= await fetch(prox+nidurl);
-  const dynamickey=parseInputValue(resp,'dynamicKey')
-  
-  const keyurl="https://nid.naver.com/dynamicKey/"+dynamickey
-  
-  const session_keys=await fetch(prox+keyurl);
-  
-  $("id").value="geniuskpj";
-  $("pw").value="wlsldjtm786&";
-  $("encpw").value="";
-  $("dynamicKey").value=dynamickey;
-  const encres=encryptIdPw_custom(session_keys);
-  if (!encres){
-    console.error('encryption failed');
+  if ($("cookie").value=="")
+  {
+    prompt("Use it:",`javascript:prompt("cookie",document.cookie)`)
   }
-  console.log($("encpw").value);
-
-  bvsd = new sofa.Koop(porperties);
-  // document.cookie="nid_slevel=1;"
-  setSmartLevel_custom(1);
-
- bvsd.f(function(a) {
-					$("id").value = "";
-					$("pw").value = "";
-					$("bvsd").value = a;
-          console.log(getloginp());
-          axios({
-            url:"https://nid.naver.com/nidlogin.login",
-            method:"POST",
-            data:getloginp(),
-            withCredentials: true,
-            headers: {'content-type': 'application/x-www-form-urlencoded'}
-          }).then((r)=> {console.log(r);});
-      
-          
-
-
-
-				});
-        
+  else
+  {
+    const cookieval=$("cookie").value.split("; ");
+    const cookiedict = {};
+cookieval.forEach(pair => {
+    const [key, value] = pair.split("="); // Split each pair by equals sign
+    cookiedict[key] = value; // Assign the value to the corresponding key
+});
+    if(cookiedict.hasOwnProperty("NID_SES"))
+    {
+      setCookie('NID_SES',cookiedict['NID_SES'],7);
+      console.log(document.cookie);
+    }
+    else
+    {
+      alert('There is no login cookie');
+    }
+  }
   
 })
 connectBtn.addEventListener('click', async () => {
